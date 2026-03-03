@@ -11,26 +11,20 @@ export const game = {
 const puzzles = [ // required = the number in the circle
     {
         islands: [
-            {row: 1, col: 1, required: 3},
-            {row: 1, col: 5, required: 2},
-            {row: 3, col: 1, required: 3},
-            {row: 3, col: 3, required: 4},
-            {row: 3, col: 5, required: 3},
-            {row: 5, col: 1, required: 2},
-            {row: 5, col: 3, required: 3},
-            {row: 5, col: 5, required: 2}
-        ]
-    },
-    {
-        islands: [
-            {row: 0, col: 2, required: 2},
-            {row: 2, col: 0, required: 2},
-            {row: 2, col: 2, required: 4},
-            {row: 2, col: 4, required: 3},
-            {row: 2, col: 6, required: 1},
-            {row: 4, col: 2, required: 3},
-            {row: 4, col: 4, required: 2},
-            {row: 6, col: 2, required: 1}
+            {row: 0, col: 0, required: 2},
+            {row: 0, col: 2, required: 3},
+            {row: 0, col: 4, required: 6},
+            {row: 0, col: 6, required: 2},
+            {row: 2, col: 1, required: 2},
+            {row: 2, col: 4, required: 8},
+            {row: 2, col: 6, required: 3},
+            {row: 4, col: 0, required: 2},
+            {row: 4, col: 3, required: 2},
+            {row: 4, col: 6, required: 1},
+            {row: 5, col: 4, required: 2},
+            {row: 6, col: 1, required: 2},
+            {row: 6, col: 3, required: 5},
+            {row: 6, col: 6, required: 2}
         ]
     }
 ];
@@ -75,8 +69,6 @@ export function getBridge(a,b){
 }
 
 export function toggleBridge(i1,i2){
-    console.log("toggle",i1.id,i2.id);
-
     const edge = getBridge(i1.id,i2.id);
 
     if(edge){
@@ -114,7 +106,6 @@ export function toggleBridge(i1,i2){
     }
     i1.remaining--;
     i2.remaining--;
-    console.log(i1.remaining, i2.remaining);
 }
 
 // Game logic
@@ -191,7 +182,37 @@ export function checkWin(){
 
 
 function isConnected(){
-    // TODO
+    console.log("checking if connected");
+    //create adjacency list
+    const adj = {};
+    for(const i of game.islands){ // add each island (node)
+        adj[i.id] = [];
+    }
+    for(const bridge of game.bridges){ // add the bridges (edges)
+        // for each edge, add add the endpoints to each others adjacency list
+        adj[bridge.a].push(bridge.b);
+        adj[bridge.b].push(bridge.a);
+    }
+
+    // bfs
+    const visited = new Set();
+    const queue = [adj[0]];
+
+    while(queue.length > 0){
+        const neighbors = queue.shift();
+        for(const n of neighbors){
+            if(!visited.has(n)){
+                visited.add(n);
+                queue.push(adj[n]);
+            }
+        }
+    }
+    // if we visited all the nodes, then the graph is connected
+    if(visited.size === adj.length){
+        console.log("graph is connected - win");
+        return true;
+    } 
+
     return false;
 }
 

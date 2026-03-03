@@ -45,7 +45,8 @@ function newGame(){
         id: idx,
         row: i.row,
         col: i.col,
-        required: i.required
+        required: i.required,
+        remaining: i.required
     }));
 
     game.bridges = [];
@@ -55,16 +56,17 @@ function newGame(){
 }
 
 
-// Game logic
-
+// get island at row and col
 export function islandAt(row,col){
     return game.islands.find(i => i.row===row && i.col===col);
 }
 
+// get island by id
 export function getIsland(id){
     return game.islands.find(i => i.id===id);
 }
 
+// returns the bridge object if there is a bridge between islands with id a and id b
 export function getBridge(a,b){
     return game.bridges.find(e =>
         (e.a===a && e.b===b) ||
@@ -72,6 +74,50 @@ export function getBridge(a,b){
     );
 }
 
+export function toggleBridge(i1,i2){
+    console.log("toggle",i1.id,i2.id);
+
+    const edge = getBridge(i1.id,i2.id);
+
+    if(edge){
+        console.log("edge exists with count", edge.count);
+        // theres already a bridge there, check if its weight is 1 or 2
+        if(edge.count===1){
+            // upgrade to weight 2 only if they both have some remaining degree
+            if (i1.remaining <= 0 || i2.remaining <= 0){
+                console.log("cant add edge, no remaining degree");
+                return;
+            } 
+            edge.count = 2;
+        }
+            
+        else{
+            // bridge already at weight 2, remove it
+            game.bridges = game.bridges.filter(e => e!==edge);
+            // add 2 back to the remaining degree of both islands
+            i1.remaining+=2;
+            i2.remaining+=2;
+            return;
+        }
+
+    } else {
+        // no bridge there, add new one with weight 1
+        // but only if they both have some remaining degree
+        if (i1.remaining <= 0 || i2.remaining <= 0) return;
+
+        game.bridges.push({
+            a:i1.id,
+            b:i2.id,
+            count:1
+        });
+
+    }
+    i1.remaining--;
+    i2.remaining--;
+    console.log(i1.remaining, i2.remaining);
+}
+
+// Game logic
 export function canConnect(i1,i2){
     // must be in same row or column
     if(i1.id === i2.id) return false;
@@ -106,6 +152,7 @@ export function canConnect(i1,i2){
 
         const bHorizontal = a.row === c.row;
 
+        // perpendicular bridges - make sure they dont cross
         if(horizontal && !bHorizontal){
 
             const col = a.col;
@@ -132,41 +179,20 @@ export function canConnect(i1,i2){
     return true;
 }
 
-export function toggleBridge(i1,i2){
 
-    const edge = getBridge(i1.id,i2.id);
-
-    if(edge){
-
-        if(edge.count===1)
-            edge.count = 2;
-        else
-            game.bridges = game.bridges.filter(e => e!==edge);
-
-    } else {
-
-        game.bridges.push({
-            a:i1.id,
-            b:i2.id,
-            count:1
-        });
-
+export function checkWin(){
+    //check if all islands have the required number of bridges
+    for(const i of game.islands){
+        if(i.remaining > 0) return false;
     }
-}
-
-function islandDegree(id){
-    // TODO
-}
-
-function checkWin(){
-    // TODO 
+    // final check to see if the graph is all one conected component
     return isConnected();
 }
 
 
 function isConnected(){
     // TODO
-    return true;
+    return false;
 }
 
 newGame();

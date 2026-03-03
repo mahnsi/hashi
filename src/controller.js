@@ -1,4 +1,4 @@
-import {game, islandAt, canConnect, toggleBridge} from "./engine.js";
+import {game, islandAt, canConnect, toggleBridge, checkWin} from "./engine.js";
 import {render} from "./render.js";
 
 export function handleCellClick(row,col){
@@ -15,8 +15,13 @@ export function handleCellClick(row,col){
 
     } else {
         // second island click - build bridge if allowed
-        if(canConnect(game.selected,island))
+        if(canConnect(game.selected,island)){
             toggleBridge(game.selected,island);
+            if (checkWin()){
+                // TODO: handle
+            }
+        }
+            
 
         game.selected = null;
     }

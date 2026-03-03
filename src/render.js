@@ -21,20 +21,21 @@ function renderGrid(){
                 handleCellClick(r,c);
             });
 
+            // check game state for island at this row and col
             const island = islandAt(r,c);
 
             if(island){
-
+                // if there is, render the island
                 const el = document.createElement("div");
                 el.className = "island";
-                el.textContent = island.required;
+                el.textContent = island.required; // write in the circle the number of bridges required
 
-                if(game.selected &&
+                if(game.selected && // check game state for whether this island is currently selected
                    game.selected.id===island.id){
                     el.classList.add("selected");
                 }
 
-                cell.appendChild(el);
+                cell.appendChild(el); 
             }
 
             grid.appendChild(cell);

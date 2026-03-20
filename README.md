@@ -1,7 +1,8 @@
-# hashi
+# Hashiwokakero
 
-## generator (7 by 7 grid)
+### [hashi.mahnsi.dev](hashi.mahnsi.dev)
 
-# game playing 
+## Puzzle Generator 
 
-# Later: menu for "Game --> levels" "Solver"
+
+## Solver

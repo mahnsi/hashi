@@ -68,6 +68,7 @@ export function getBridge(a,b){
     );
 }
 
+// add or remove a bridge between two islands i1 and i2 (if theres remaining degree at both islands)
 export function toggleBridge(i1,i2){
     const edge = getBridge(i1.id,i2.id);
 
@@ -109,6 +110,8 @@ export function toggleBridge(i1,i2){
 }
 
 // Game logic
+
+// check if two islands can physically connect 
 export function canConnect(i1,i2){
     // must be in same row or column
     if(i1.id === i2.id) return false;
@@ -207,12 +210,14 @@ function isConnected(){
             }
         }
     }
+    console.log("visited: ", visited.size, "total: ", adj.length);
     // if we visited all the nodes, then the graph is connected
     if(visited.size === adj.length){
         console.log("graph is connected - win");
         return true;
     } 
 
+    console.log("graph is not one connected component");
     return false;
 }
 

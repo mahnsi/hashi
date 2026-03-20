@@ -28,6 +28,10 @@ function renderGrid(){
                 // if there is, render the island
                 const el = document.createElement("div");
                 el.className = "island";
+                if(island.remaining===0){
+                    el.classList.add("full");
+                }
+
                 el.textContent = island.required; // write in the circle the number of bridges required
 
                 if(game.selected && // check game state for whether this island is currently selected

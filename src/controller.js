@@ -19,6 +19,7 @@ export function handleCellClick(row,col){
             toggleBridge(game.selected,island);
             if (checkWin()){
                 // TODO: handle
+                console.log("win!");
             }
         }
             
